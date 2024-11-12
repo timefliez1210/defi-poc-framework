@@ -46,12 +46,7 @@ contract AssetToken is MockERC20 {
     /*//////////////////////////////////////////////////////////////
                                FUNCTIONS
     //////////////////////////////////////////////////////////////*/
-    constructor(
-        address thunderLoan,
-        MockERC20 underlying,
-        string memory assetName,
-        string memory assetSymbol
-    )
+    constructor(address thunderLoan, MockERC20 underlying, string memory assetName, string memory assetSymbol)
         MockERC20(assetName, assetSymbol, 18)
         revertIfZeroAddress(thunderLoan)
         revertIfZeroAddress(address(underlying))

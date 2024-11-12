@@ -104,7 +104,7 @@ The points within the code 1. - 4. are all invokable within 1 call. We would cal
 
 ## Impact
 
-By potentially having access to stLink for a short duration of time, without buying it, the price of stLink compared to Link can be artifiaclly manipulatable downwards. This can directly harm regular stLink users using the liquid staking token on third party services (lending plattforms, exchanges etc.), since those those third party services rely on the stLink and Link peg to calculate the fair stLink price. 
+By potentially having access to stLink for a short duration of time, without buying it, the price of stLink compared to Link can be artifiaclly manipulatable downwards. This can directly harm regular stLink users using the liquid staking token on third party services (lending plattforms, exchanges etc.), since those third party services rely on the stLink and Link peg to calculate the fair stLink price. 
 
 
 ## Limitations
@@ -119,7 +119,7 @@ more chains (arbitrum, metis) this limitation can be met.
 ## Proof of Concept
 
 Within this repo you find a simplified mock version of ```PriorityPool``` and ```StakingPool```. Also a simplified exchange, flashloan provider and a lending protocol.
-You may validate the following proposed attack path by running the commands ```forge build``` and ```forge test -vvv``` or ```forge test --fork-url https://mainnet.infura.io/v3/${your_etherscan_api_key} -vvv```. 
+You may validate the following proposed attack path by running the commands ```forge build``` and ```forge test -vvv``` or ```forge test --fork-url https://mainnet.infura.io/v3/${your_infura_api_key} -vvv```. 
 
 An attacker takes 2 flashloans
 

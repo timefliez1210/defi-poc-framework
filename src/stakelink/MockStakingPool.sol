@@ -7,7 +7,6 @@ import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 contract MockStakingPool {
     error InvalidDeposit();
 
-
     address mockPriorityPool;
     MockERC20 private immutable token;
     MockERC20 private immutable lst;
@@ -21,11 +20,7 @@ contract MockStakingPool {
         lst = MockERC20(_lst);
     }
 
-    function deposit(
-        address _account,
-        uint256 _amount,
-        bytes[] calldata _data
-    ) external {
+    function deposit(address _account, uint256 _amount, bytes[] calldata _data) external {
         // require(strategies.length > 0, "Must be > 0 strategies to stake");
 
         uint256 startingBalance = token.balanceOf(address(this));
@@ -34,14 +29,16 @@ contract MockStakingPool {
             token.transferFrom(msg.sender, address(this), _amount);
             // _depositLiquidity(_data);
             _mint(_account, _amount);
-            totalStaked += _amount; }
+            totalStaked += _amount;
+        }
         // } else {
         //     _depositLiquidity(_data);
         // }
 
         uint256 endingBalance = token.balanceOf(address(this));
-        if (endingBalance > startingBalance && endingBalance > 1000e18)
+        if (endingBalance > startingBalance && endingBalance > 1000e18) {
             revert InvalidDeposit();
+        }
     }
 
     function donateTokens(uint256 _amount) external {

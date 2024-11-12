@@ -5,8 +5,12 @@ pragma solidity 0.8.23;
 import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 import {AssetToken} from "./AssetToken.sol";
 
-contract FlashLoanProvider {
+/* 
+ * This Flashloan contract has it's origins from the thunderloan 
+ * protocol on cyfrin updraft. It is simplified for demonstration purposes.
+ */
 
+contract FlashLoanProvider {
     error ThunderLoan__NotAllowedToken(MockERC20 token);
     error ThunderLoan__CantBeZero();
     error ThunderLoan__NotPaidBack(uint256 expectedEndingBalance, uint256 endingBalance);
@@ -18,7 +22,6 @@ contract FlashLoanProvider {
     error ThunderLoan__BadNewFee();
 
     MockERC20 usdc;
-
 
     mapping(MockERC20 => AssetToken) public s_tokenToAssetToken;
     mapping(MockERC20 token => bool currentlyFlashLoaning) private s_currentlyFlashLoaning;
@@ -36,16 +39,11 @@ contract FlashLoanProvider {
 
     function deposit(MockERC20 token, uint256 amount) external payable {
         AssetToken assetToken = s_tokenToAssetToken[token];
-        
+
         usdc.transferFrom(msg.sender, address(this), amount);
     }
 
-    function flashloan(
-        address receiverAddress,
-        MockERC20 token,
-        uint256 amount,
-        bytes calldata params
-    )
+    function flashloan(address receiverAddress, MockERC20 token, uint256 amount, bytes calldata params)
         external
         revertIfZero(amount)
     {
@@ -60,9 +58,6 @@ contract FlashLoanProvider {
             revert ThunderLoan__CallerIsNotContract();
         }
 
-
-
-
         s_currentlyFlashLoaning[token] = true;
         //usdc.transfer(receiverAddress, amount);
         // slither-disable-next-line unused-return reentrancy-vulnerabilities-2
@@ -76,11 +71,9 @@ contract FlashLoanProvider {
     }
 
     function repay(MockERC20 token, uint256 amount) public {
-        
         AssetToken assetToken = s_tokenToAssetToken[token];
         usdc.transferFrom(msg.sender, address(this), amount);
     }
 
     receive() external payable {}
 }
-

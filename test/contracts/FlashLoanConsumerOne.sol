@@ -9,7 +9,6 @@ import {MockStakingPool} from "../../src/stakelink/MockStakingPool.sol";
 import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 
 contract FlashLoanConsumerOne {
-
     MockStakingPool stakingPool;
     MockPriorityPool priorityPool;
     Pool pool;
@@ -18,15 +17,15 @@ contract FlashLoanConsumerOne {
     MockERC20 token;
     MockERC20 lst;
 
-    bytes  params;
+    bytes params;
 
     constructor(
-        MockPriorityPool _mockPrio, 
-        Pool _poolLinkStlink, 
-        MockStakingPool _mockStaking, 
-        FlashLoanProvider _flashLoanProvider, 
-        address _usdc, 
-        address _stLink, 
+        MockPriorityPool _mockPrio,
+        Pool _poolLinkStlink,
+        MockStakingPool _mockStaking,
+        FlashLoanProvider _flashLoanProvider,
+        address _usdc,
+        address _stLink,
         address _link
     ) {
         loan = FlashLoanProvider(_flashLoanProvider);
@@ -42,9 +41,8 @@ contract FlashLoanConsumerOne {
         loan.flashloan(address(this), usdc, _amount, params);
     }
 
-
     function _repayFlashLoan(uint256 _amount) public payable {
-        loan.repay(usdc, _amount); 
+        loan.repay(usdc, _amount);
     }
 
     receive() external payable {}

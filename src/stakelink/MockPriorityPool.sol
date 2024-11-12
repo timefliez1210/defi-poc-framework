@@ -11,8 +11,7 @@ contract MockPriorityPool {
     MockERC20 private immutable token;
     MockStakingPool stakingPool;
 
-
-    constructor(address _token)  {
+    constructor(address _token) {
         token = MockERC20(_token);
     }
 
@@ -32,8 +31,7 @@ contract MockPriorityPool {
         _deposit(_account, _amount, _shouldQueue, _data);
     }
 
-
-     /**
+    /**
      * @notice Deposits asset tokens into the withdrawal pool, staking pool, and/or queues them
      * @dev tokens will be deposited into the withdrawal pool if there are queued withdrawals, then the
      * staking pool if there is deposit room. Remaining tokens will then be queued if `_shouldQueue`
@@ -42,13 +40,9 @@ contract MockPriorityPool {
      * @param _amount amount to deposit
      * @param _shouldQueue whether tokens should be queued
      * @param _data deposit data passed to staking pool strategies
-     **/
-     function _deposit(
-        address _account,
-        uint256 _amount,
-        bool _shouldQueue,
-        bytes[] memory _data
-    ) internal {
+     *
+     */
+    function _deposit(address _account, uint256 _amount, bool _shouldQueue, bytes[] memory _data) internal {
         // commented out since irrelevant to set up
         // if (poolStatus != PoolStatus.OPEN) revert DepositsDisabled();
 
@@ -67,7 +61,7 @@ contract MockPriorityPool {
             // }
 
             if (toDeposit != 0) {
-                uint256 canDeposit = 100e18;//stakingPool.canDeposit();
+                uint256 canDeposit = 100e18; //stakingPool.canDeposit();
                 if (canDeposit != 0) {
                     uint256 toDepositIntoPool = toDeposit <= canDeposit ? toDeposit : canDeposit;
                     stakingPool.deposit(_account, toDepositIntoPool, _data);
@@ -92,8 +86,6 @@ contract MockPriorityPool {
 
         // emit Deposit(_account, _amount - toDeposit, _shouldQueue ? toDeposit : 0);
     }
-
-
 
     receive() external payable {}
 }

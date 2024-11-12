@@ -9,15 +9,16 @@ import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
  * This is a simplified lending protocol which by itself is the Vault
  * The only functionality it offers is to deposit stLink and use it as colleteral for 
  * USDC loans. The main purpose is to set a proof of profitability and showcase that the users 
- * of stake.link would be directly at harm.
+ * of stake.link would be directly at harm. Credits to Cyfrin Updrafts lesson
+ * about decentralized stablecoins, which the basic functionality came from
 */
-contract LendingProtocol {
 
+contract LendingProtocol {
     Pool pool;
     MockERC20 usdc;
     MockERC20 token;
     MockERC20 lst;
-    
+
     uint256 private constant LIQUIDATION_THRESHOLD = 50; // This means you need to be 200% over-collateralized
     uint256 private constant LIQUIDATION_BONUS = 10; // This means you get assets at a 10% discount when liquidating
     uint256 private constant LIQUIDATION_PRECISION = 100;
@@ -30,32 +31,22 @@ contract LendingProtocol {
     mapping(address user => uint256 usdLoaned) public amountLoaned;
     address[] private s_collateralTokens;
 
-
-    constructor(
-        Pool _pool,
-        address _usdc, 
-        address _stLink, 
-        address _link
-    ) {
+    constructor(Pool _pool, address _usdc, address _stLink, address _link) {
         pool = _pool;
         usdc = MockERC20(_usdc);
         lst = MockERC20(_stLink);
         token = MockERC20(_link);
     }
 
-    function deposit(
-        uint256 amountCollateral
-    ) public payable{
+    function deposit(uint256 amountCollateral) public payable {
         s_collateralDeposited[msg.sender][address(lst)] += amountCollateral;
         bool success = MockERC20(address(lst)).transferFrom(msg.sender, address(this), amountCollateral);
         if (!success) {
             revert("Deposit Didnt work.");
         }
-        
-
     }
 
-    function takeLoan() public payable{
+    function takeLoan() public payable {
         uint256 amountCollateral = s_collateralDeposited[msg.sender][address(lst)];
         uint256 lstValueUsd = _getUsdValue();
         uint256 loanAmount = amountCollateral * lstValueUsd / 2;
@@ -63,28 +54,24 @@ contract LendingProtocol {
         amountLoaned[msg.sender] += loanAmount;
     }
 
-    function getHealthFactor(address _user) public view returns(uint256){
+    function getHealthFactor(address _user) public view returns (uint256) {
         uint256 collateralValueInUsd;
         uint256 outstandingDebt;
         // Here we use out of necessarity the Pool as oracle.
         collateralValueInUsd = _getUsdValue();
         outstandingDebt = amountLoaned[_user];
-        
-        return ((s_collateralDeposited[_user][address(lst)] * collateralValueInUsd)  / outstandingDebt);
+
+        return ((s_collateralDeposited[_user][address(lst)] * collateralValueInUsd) / outstandingDebt);
     }
 
-    function _getUsdValue() public view returns(uint256){
+    function _getUsdValue() public view returns (uint256) {
         uint256 collateralValueInUsd;
         // Here we use out of necessarity the Pool as oracle.
         uint256 inputAmount;
         uint256 inputReserves = token.balanceOf(address(pool));
         uint256 outputReserves = lst.balanceOf(address(pool));
 
-        inputAmount = pool.getInputAmountBasedOnOutput(
-            1e18,
-            inputReserves,
-            outputReserves
-        );
+        inputAmount = pool.getInputAmountBasedOnOutput(1e18, inputReserves, outputReserves);
 
         // Here we assume a Chainlink price of 11 USD per token, this would usually be a chainlink pricefeed or a secondary call
         // But it does not matter for our example where this call is coming from. The Chainlink/USDC liquidity is sufficiently backed
@@ -95,11 +82,9 @@ contract LendingProtocol {
         return collateralValueInUsd = outputReserves / inputReserves * PRICE_CHAINLINK;
     }
 
-    function liquidate(
-        address user
-    ) public payable{
+    function liquidate(address user) public payable {
         uint256 startingUserHealthFactor = getHealthFactor(user);
-        
+
         if (startingUserHealthFactor >= MIN_HEALTH_FACTOR) {
             revert("Manipulation Failed, Health factor of User is still good!");
         }
@@ -108,12 +93,11 @@ contract LendingProtocol {
         if (!success) {
             revert("Transfer Failed at liquidation");
         }
-
     }
 
-    function getColleteralDeposited(address user, address _token) public view returns(uint256) {
+    function getColleteralDeposited(address user, address _token) public view returns (uint256) {
         return s_collateralDeposited[user][_token];
     }
 
-    receive() external payable{}
+    receive() external payable {}
 }
