@@ -106,7 +106,7 @@ By potentially having access to stLink for a short duration of time, without buy
 2. Third parties need to integrate with stLink.
 
 These limitations though could be met, with either several users withdrawing at once, or one big stLink holder withdrawing. Considering that the current liquidity within e.g. curve.finance on ethereum is at roughly 170k stLink and Link which equals a provided stLink value in USD of roughly 2,380,000 
-USD it does not entirely unlikely.
+USD it does not at all unlikely.
 Secondly the attack vector would be possible if the stake.link protocol were to be deployed on L2 chains to open up for users (e.g. Arbitrum or Metis) or for other staking programs like Ether.
 
 The second limitation should be straight forward, if other DeFi protocols 
