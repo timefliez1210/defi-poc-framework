@@ -3,18 +3,17 @@
 pragma solidity 0.8.23;
 
 import {MockStakingPool} from "./MockStakingPool.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 
 contract MockPriorityPool {
     error InvalidAmount();
 
-    IERC20 private immutable token;
+    MockERC20 private immutable token;
     MockStakingPool stakingPool;
 
 
     constructor(address _token)  {
-        token = IERC20(_token);
+        token = MockERC20(_token);
     }
 
     function initializeMockStakingPool(address _mockStakingPool) external {

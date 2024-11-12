@@ -2,24 +2,23 @@
 
 pragma solidity 0.8.23;
 
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC20, ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {MockERC20} from "../../lib/solady/test/utils/mocks/MockERC20.sol";
 
 contract MockStakingPool {
     error InvalidDeposit();
 
 
     address mockPriorityPool;
-    IERC20 private immutable token;
-    ERC20 private immutable lst;
+    MockERC20 private immutable token;
+    MockERC20 private immutable lst;
 
     uint256 totalStaked;
     uint256 unusedDepositLimit;
 
     constructor(address _mockPriorityPool, address _token, address _lst) {
         mockPriorityPool = _mockPriorityPool;
-        token = IERC20(_token);
-        lst = ERC20(_lst);
+        token = MockERC20(_token);
+        lst = MockERC20(_lst);
     }
 
     function deposit(
