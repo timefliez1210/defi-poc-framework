@@ -92,7 +92,7 @@ function deposit(
 ```
 
 
-The points within the code 1. - 4. are all invokable within 1 call. We would call ```StakingPool::canDeposit``` to know how big our flashloan must be to fill the pool, than use the loan to buy the needed Chainlink tokens and invoke `PriorityPool::deposit` basically with the parameters ```deposit(amount StakingPool.canDeposit, false, bytes)``` which than triggers the deposit chain 2., 3. up to 4th the mint function, which allows us access to a vast amount of tokens without buying them so in this case an attacker can potentially get access to the token WITHOUT buying it
+The points within the code 1. - 4. are all invokable within 1 call. We would call ```StakingPool::canDeposit``` to know how big our flashloan must be to fill the pool, than use the loan to buy the needed Chainlink tokens and invoke `PriorityPool::deposit` basically with the parameters ```deposit(amount StakingPool.canDeposit, false, bytes)``` which than triggers the deposit chain 2., 3. up to 4th the mint function, which allows us access to a vast amount of tokens without buying them.
 
 
 ## Impact
@@ -107,7 +107,11 @@ By potentially having access to stLink for a short duration of time, without buy
 
 These limitations though could be met, with either several users withdrawing at once, or one big stLink holder withdrawing. Considering that the current liquidity within e.g. curve.finance on ethereum is at roughly 170k stLink and Link which equals a provided stLink value in USD of roughly 2,380,000 
 USD it does not entirely unlikely.
-Secondly the attack vector would be possible if the stake.link protocol were to be deployed on L2 chains to open up for users (e.g. Arbitrum or Metis).
+Secondly the attack vector would be possible if the stake.link protocol were to be deployed on L2 chains to open up for users (e.g. Arbitrum or Metis) or for other staking programs like Ether.
+
+The second limitation should be straight forward, if other DeFi protocols 
+should not integrate on LSTs it would defeat the purpose of such, users could
+just stake directly.
 
 Therefor my estimate for severity of the scenario would be:
 
