@@ -51,13 +51,4 @@ contract MockStakingPool {
         lst.mint(_to, _amount);
     }
 
-    function canDeposit() external view returns (uint256) {
-        uint256 max;
-
-        if (max <= totalStaked) {
-            return 0;
-        } else {
-            return max - totalStaked;
-        }
-    }
 }

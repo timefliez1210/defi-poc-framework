@@ -7,13 +7,6 @@ The deposit Chain of PriorityPool and StakingPool lets users deposit Link and re
 to manipulate the peg between stLink and Link and therefor harm legitimate users and holders of stLink.
 
 
-Impact: High (direct user funds at risk)
-
-Likelihood: Medium (the attack path is conditional)
-
-Severity: High
-
-
 ## Vulnerable Code
 
 ```PriorityPool::deposit```
@@ -112,8 +105,17 @@ By potentially having access to stLink for a short duration of time, without buy
 1. The proposed attack vector relies on the return value of ```StakingPool::canDeposit``` to be sufficient enough, compared to liquidity pools, to move the price downwards enough to effect health factors etc. of third party protocols.
 2. Third parties need to integrate with stLink.
 
-Nevertheless, if users were to withdraw their Link out of already filled contracts, more staking space becomes available or stake.link deploys their contracts on 
-more chains (arbitrum, metis) this limitation can be met.
+These limitations though could be met, with either several users withdrawing at once, or one big stLink holder withdrawing. Considering that the current liquidity within e.g. curve.finance on ethereum is at roughly 170k stLink and Link which equals a provided stLink value in USD of roughly 2,380,000 
+USD it does not entirely unlikely.
+Secondly the attack vector would be possible if the stake.link protocol were to be deployed on L2 chains to open up for users (e.g. Arbitrum or Metis).
+
+Therefor my estimate for severity of the scenario would be:
+
+Impact: High (direct user funds at risk)
+
+Likelihood: Medium (the attack path is conditional)
+
+Severity: High
 
 
 ## Proof of Concept

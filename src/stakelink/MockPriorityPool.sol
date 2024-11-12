@@ -50,6 +50,12 @@ contract MockPriorityPool {
         uint256 totalQueued = 0;
 
         if (totalQueued == 0) {
+
+            // This part is safe to comment out, since it handles the case if there
+            // are queued withdrawals. So the contract, if there are, would anyway
+            // give us the LST here. Otherwise it is commented out to circumvent deploying
+            // the withdrawal pool in this Test Suite
+
             // uint256 queuedWithdrawals = withdrawalPool.getTotalQueuedWithdrawals();
             // if (queuedWithdrawals != 0) {
             //     uint256 toDepositIntoQueue = toDeposit <= queuedWithdrawals
@@ -61,6 +67,12 @@ contract MockPriorityPool {
             // }
 
             if (toDeposit != 0) {
+
+                // Arbitrary value instead of calling the function simply
+                // because to prove the attack path it doesnt matter
+                // In reality we would need to assume that stakingPool.canDeposit()
+                // returns a value high enough compared to existing liquidity
+
                 uint256 canDeposit = 100e18; //stakingPool.canDeposit();
                 if (canDeposit != 0) {
                     uint256 toDepositIntoPool = toDeposit <= canDeposit ? toDeposit : canDeposit;
@@ -69,7 +81,9 @@ contract MockPriorityPool {
                 }
             }
         }
-
+        
+        // This part is safe to comment out, since it only handles the case
+        // if the staking pool cant consume this deposit aKa the pool is full.
         // if (toDeposit != 0) {
         //     if (_shouldQueue) {
         //         _requireNotPaused();

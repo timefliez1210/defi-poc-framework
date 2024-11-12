@@ -39,7 +39,6 @@ contract FlashLoanProvider {
 
     function deposit(MockERC20 token, uint256 amount) external payable {
         AssetToken assetToken = s_tokenToAssetToken[token];
-
         usdc.transferFrom(msg.sender, address(this), amount);
     }
 
