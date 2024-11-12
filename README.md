@@ -115,9 +115,9 @@ just stake directly.
 
 Therefor my estimate for severity of the scenario would be:
 
-Impact: High (direct user funds at risk)
+Impact: High
 
-Likelihood: Medium (the attack path is conditional)
+Likelihood: Medium
 
 Severity: High
 
